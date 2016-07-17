@@ -1,0 +1,6 @@
+[package]
+name = "rust_math_parser"
+version = "0.1.0"
+authors = ["Dillon Hammond <dillonhammond@gmail.com>"]
+
+[dependencies]
