@@ -6,7 +6,14 @@ rust:
     - stable
     - beta
     - nightly
-matrix:
 
+matrix:
     allow_failures:
         - rust: nightly
+
+notifications:
+    email:
+        recipients:
+            - dillonhammond@gmail.com
+        on_success: change
+        on_failure: always
