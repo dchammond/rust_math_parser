@@ -1,5 +1,4 @@
-mod lexer;
-mod parser;
+extern crate rust_math_parser;
 
 use std::io;
 use std::io::Write;
@@ -11,15 +10,16 @@ fn main() {
     println!("To define a function, simply type FUNC_NAME=EXPRESSION and hit RETURN.");
     println!("Valid commands are: sym_int, int, sym_def, and def.");
     println!("Type 'quit' to exit.");
-    let mut input = String::new();
     let stdin = io::stdin();
     let mut stdout = io::stdout();
     loop {
-        input.clear();
+        let mut input: String = String::new();
         print!(">>>> ");
         stdout.flush().ok();
-        stdin.read_line(&mut input);
-        let my_parser: parser::Parser = parser::Parser::new(input);
-        println("{:?}", my_parser.parse(input));
+       if let Err(x) = stdin.read_line(&mut input) {
+           panic!(x);
+       }
+        let mut my_parser: rust_math_parser::parser::Parser = rust_math_parser::parser::Parser::new(input);
+        println!("{:?}", my_parser.parse());
     }
 }
