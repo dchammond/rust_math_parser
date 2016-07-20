@@ -3,7 +3,7 @@
 use regex::Regex;
 
 #[repr(u32)]
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum SubToken {
     Plus     = 0,
     Minus    = 1,
@@ -18,7 +18,7 @@ pub enum SubToken {
     End      = 7,
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Token {
     kind: SubToken,
     value: Option<f64>
@@ -42,6 +42,7 @@ impl Token {
     }
 }
 
+#[derive(Debug)]
 pub struct Lexer {
     input: String,
     return_previous_token: bool,
@@ -57,47 +58,49 @@ impl Lexer {
             self.return_previous_token = false;
             return self.previous_token.clone().unwrap();
         }
-        let strip_input = strip_white_space(self.input.clone());
+        let mut strip_input = strip_white_space(self.input.clone());
         lazy_static! {
             static ref PLUS_RE: Regex = Regex::new(r"\A\+").unwrap();
             static ref MINUS_RE: Regex = Regex::new(r"\A-").unwrap();
-            static ref MULT_RE: Regex = Regex::new(r"\*").unwrap();
+            static ref MULT_RE: Regex = Regex::new(r"\A\*").unwrap();
             static ref DIV_RE: Regex = Regex::new(r"\A/").unwrap();
             static ref NUM_RE: Regex = Regex::new(r"\A\d+(\.\d+)?").unwrap();
             static ref LPAREN_RE: Regex = Regex::new(r"\A\(").unwrap();
             static ref RPAREN_RE: Regex = Regex::new(r"\A\)").unwrap();
         }
         let token: Token;
-        if PLUS_RE.is_match(&strip_input[..]) {
-            PLUS_RE.replace(&strip_input[..], "");
+        let temp = &(strip_input.clone())[..];
+        if PLUS_RE.is_match(temp) {
+            strip_input = PLUS_RE.replace(temp, "");
             token = Token::new(SubToken::Plus, None);
-        } else if MINUS_RE.is_match(&strip_input[..]) {
-            MINUS_RE.replace(&strip_input[..], "");
+        } else if MINUS_RE.is_match(temp) {
+            strip_input = MINUS_RE.replace(temp, "");
             token = Token::new(SubToken::Minus, None);
-        } else if MULT_RE.is_match(&strip_input[..]) {
-            MULT_RE.replace(&strip_input[..], "");
+        } else if MULT_RE.is_match(temp) {
+            strip_input = MULT_RE.replace(temp, "");
             token = Token::new(SubToken::Multiply, None);
-        } else if DIV_RE.is_match(&strip_input[..]) {
-            DIV_RE.replace(&strip_input[..], "");
+        } else if DIV_RE.is_match(temp) {
+            strip_input = DIV_RE.replace(temp, "");
             token = Token::new(SubToken::Divide, None);
-        } else if NUM_RE.is_match(&strip_input[..]) {
+        } else if NUM_RE.is_match(temp) {
             use std::str::FromStr;
-            let value: Option<f64> = f64::from_str(NUM_RE.captures(&strip_input[..]).unwrap().at(0).unwrap()).ok();
-            NUM_RE.replace(&strip_input[..], "");
+            let value: Option<f64> = f64::from_str(NUM_RE.captures(temp).unwrap().at(0).unwrap()).ok();
+            strip_input = NUM_RE.replace(temp, "");
             token = Token::new(SubToken::Number, value);
-        } else if LPAREN_RE.is_match(&strip_input[..]) {
-            LPAREN_RE.replace(&strip_input[..], "");
+        } else if LPAREN_RE.is_match(temp) {
+            strip_input = LPAREN_RE.replace(temp, "");
             token = Token::new(SubToken::LParen, None);
-        } else if RPAREN_RE.is_match(&strip_input[..]) {
-            RPAREN_RE.replace(&strip_input[..], "");
+        } else if RPAREN_RE.is_match(temp) {
+            strip_input = RPAREN_RE.replace(temp, "");
             token = Token::new(SubToken::RParen, None);
         } else if strip_input.is_empty() {
             token = Token::new(SubToken::End, None);
         } else {
             let mut error: String = String::from("Unknown token: ");
-            error.push_str(&strip_input[..]);
+            error.push_str(temp);
             panic!(error);
         }
+        self.input = strip_input;
         self.previous_token = Some(token.clone());
         token
     }
