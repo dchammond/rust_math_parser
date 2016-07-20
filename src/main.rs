@@ -19,10 +19,19 @@ fn main() {
         if let Err(x) = stdin.read_line(&mut input) {
             panic!(x);
         }
+        input = strip_white_space(input);
+        if input == "quit" {
+            println!("Exiting...");
+            break;
+        }
         let mut my_parser: rust_math_parser::parser::Parser = rust_math_parser::parser::Parser::new(input);
         match my_parser.parse() {
             Ok(x) => println!("{}", x),
             Err(msg) => println!("{}", msg)
         }
     }
+}
+
+fn strip_white_space(input: String) -> String {
+    input.split_whitespace().collect::<Vec<&str>>().join("")
 }
