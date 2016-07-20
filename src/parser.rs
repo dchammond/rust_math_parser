@@ -13,32 +13,56 @@ impl Parser {
     pub fn new(input: String) -> Self {
         Parser{lexer: Lexer::new(input)}
     }
-    pub fn parse(&mut self) -> f64 {
-        let expression_value: f64 = self.expression();
-        let token: Token = self.lexer.get_next_token();
+    pub fn parse(&mut self) -> Result<f64, String> {
+        let expression_value: f64 = match self.expression() {
+            Ok(v) => v,
+            Err(msg) => return Err(msg)
+        };
+        let token: Token = match self.lexer.get_next_token() {
+            Ok(t) => t,
+            Err(msg) => return Err(msg)
+        };
         match token.get_kind() {
             lexer::SubToken::End => {
-                return expression_value;
+                return Ok(expression_value);
             }
             _ => {
-                panic!("End expected");
+                return Err(String::from("End expected"));
             }
         }
     }
-    pub fn expression(&mut self) -> f64 {
-        let mut component1: f64 = self.factor();
-        let mut token: Token = self.lexer.get_next_token();
+    pub fn expression(&mut self) -> Result<f64, String> {
+        let mut component1: f64 = match self.factor() {
+            Ok(x) => x,
+            Err(msg) => return Err(msg)
+        };
+        let mut token: Token = match self.lexer.get_next_token() {
+            Ok(t) => t,
+            Err(msg) => return Err(msg)
+        };
         loop {
             match token.get_kind() {
                 lexer::SubToken::Plus => {
-                    let component2 = self.factor();
+                    let component2 = match self.factor() {
+                        Ok(x) => x,
+                        Err(msg) => return Err(msg)
+                    };
                     component1 += component2;
-                    token = self.lexer.get_next_token();
+                    token = match self.lexer.get_next_token() {
+                        Ok(t) => t,
+                        Err(msg) => return Err(msg)
+                    };
                 }
                 lexer::SubToken::Minus => {
-                    let component2 = self.factor();
+                    let component2 = match self.factor() {
+                        Ok(x) => x,
+                        Err(msg) => return Err(msg)
+                    };
                     component1 -= component2;
-                    token = self.lexer.get_next_token();
+                    token = match self.lexer.get_next_token() {
+                        Ok(t) => t,
+                        Err(msg) => return Err(msg)
+                    };
                 }
                 _ => {
                     break;
@@ -46,22 +70,40 @@ impl Parser {
             }
         }
         self.lexer.revert();
-        component1
+        Ok(component1)
     }
-    pub fn factor(&mut self) -> f64 {
-        let mut factor1: f64 = self.number();
-        let mut token: Token = self.lexer.get_next_token();
+    pub fn factor(&mut self) -> Result<f64, String> {
+        let mut factor1: f64 = match self.number() {
+            Ok(x) => x,
+            Err(msg) => return Err(msg)
+        };
+        let mut token: Token = match self.lexer.get_next_token() {
+            Ok(t) => t,
+            Err(msg) => return Err(msg)
+        };
         loop {
             match token.get_kind() {
                 lexer::SubToken::Multiply => {
-                    let factor2: f64 = self.number();
+                    let factor2: f64 = match self.number() {
+                        Ok(x) => x,
+                        Err(msg) => return Err(msg)
+                    };
                     factor1 *= factor2;
-                    token = self.lexer.get_next_token();
+                    token = match self.lexer.get_next_token() {
+                        Ok(t) => t,
+                        Err(msg) => return Err(msg)
+                    };
                 }
                 lexer::SubToken::Divide => {
-                    let factor2: f64 = self.number();
+                    let factor2: f64 = match self.number() {
+                        Ok(x) => x,
+                        Err(msg) => return Err(msg)
+                    };
                     factor1 /= factor2;
-                    token = self.lexer.get_next_token();
+                    token = match self.lexer.get_next_token() {
+                        Ok(t) => t,
+                        Err(msg) => return Err(msg)
+                    };
                 }
                 _ => {
                     break;
@@ -69,23 +111,35 @@ impl Parser {
             }
         }
         self.lexer.revert();
-        factor1
+        Ok(factor1)
     }
-    pub fn number(&mut self) -> f64 {
-        let token: Token = self.lexer.get_next_token();
+    pub fn number(&mut self) -> Result<f64, String> {
+        let token: Token = match self.lexer.get_next_token() {
+            Ok(t) => t,
+            Err(msg) => return Err(msg)
+        };
         let value: f64;
         match token.get_kind() {
             lexer::SubToken::LParen => {
-                value = self.expression();
-                self.lexer.get_next_token();
+                value = match self.expression() {
+                    Ok(v) => v,
+                    Err(msg) => return Err(msg)
+                };
+                match self.lexer.get_next_token() {
+                    Err(msg) => return Err(msg),
+                    _ => ()
+                };
             }
             lexer::SubToken::Number => {
-                value = token.get_value().unwrap();
+                value = match token.get_value() {
+                    Some(v) => v,
+                    None => return Err(String::from("No value"))
+                };
             }
             _ => {
-                panic!("Not a number");
+                return Err(String::from("Not a number"));
             }
         }
-        value
+        Ok(value)
     }
 }

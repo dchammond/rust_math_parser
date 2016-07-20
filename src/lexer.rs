@@ -53,10 +53,13 @@ impl Lexer {
     pub fn new(input: String) -> Self {
         Lexer{input: input, return_previous_token: false, previous_token: None}
     }
-    pub fn get_next_token(&mut self) -> Token {
+    pub fn get_next_token(&mut self) -> Result<Token, String> {
         if self.return_previous_token {
             self.return_previous_token = false;
-            return self.previous_token.clone().unwrap();
+            return match self.previous_token.clone() {
+                Some(t) => Ok(t),
+                None => Err(String::from("No previous token"))
+            }
         }
         let mut strip_input = strip_white_space(self.input.clone());
         lazy_static! {
@@ -98,11 +101,11 @@ impl Lexer {
         } else {
             let mut error: String = String::from("Unknown token: ");
             error.push_str(temp);
-            panic!(error);
+            return Err(error);
         }
         self.input = strip_input;
         self.previous_token = Some(token.clone());
-        token
+        Ok(token)
     }
     pub fn revert(&mut self) {
         self.return_previous_token = true;
