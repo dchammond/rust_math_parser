@@ -16,10 +16,13 @@ fn main() {
         let mut input: String = String::new();
         print!(">>>> ");
         stdout.flush().ok();
-       if let Err(x) = stdin.read_line(&mut input) {
-           panic!(x);
-       }
+        if let Err(x) = stdin.read_line(&mut input) {
+            panic!(x);
+        }
         let mut my_parser: rust_math_parser::parser::Parser = rust_math_parser::parser::Parser::new(input);
-        println!("{:?}", my_parser.parse());
+        match my_parser.parse() {
+            Ok(x) => println!("{}", x),
+            Err(msg) => println!("{}", msg)
+        }
     }
 }
