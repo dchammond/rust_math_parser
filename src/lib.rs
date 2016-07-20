@@ -30,7 +30,7 @@ mod tests {
     fn divide() {
         let input = String::from("15 / 3");
         let mut my_parser = parser::Parser::new(input);
-        assert!(my_parser.parse().unwrap() == (15/3) as f64);
+        assert!(my_parser.parse().unwrap() == (15.0/3.0) as f64);
     }
     #[test]
     fn end() {
