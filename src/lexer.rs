@@ -111,7 +111,6 @@ impl Lexer {
         }
         self.input = strip_input;
         self.previous_token = Some(token.clone());
-        println!("{:?}", token);
         Ok(token)
     }
     pub fn revert(&mut self) {
