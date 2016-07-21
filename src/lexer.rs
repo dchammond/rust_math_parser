@@ -5,17 +5,17 @@ use regex::Regex;
 #[repr(u32)]
 #[derive(Debug, Clone)]
 pub enum SubToken {
-    Plus     = 0,
-    Minus    = 1,
-    Multiply = 2,
-    Divide   = 3,
+    Plus,
+    Minus,
+    Multiply,
+    Divide,
 
-    Number   = 4,
+    Number,
 
-    LParen   = 5,
-    RParen   = 6,
+    LParen,
+    RParen,
 
-    End      = 7,
+    End
 }
 
 #[derive(Debug, Clone)]
@@ -63,6 +63,7 @@ impl Lexer {
         }
         let mut strip_input = strip_white_space(self.input.clone());
         lazy_static! {
+            static ref NEG_RE: Regex = Regex::new(r"\A-\d+(\.\d+)?").unwrap();
             static ref PLUS_RE: Regex = Regex::new(r"\A\+").unwrap();
             static ref MINUS_RE: Regex = Regex::new(r"\A-").unwrap();
             static ref MULT_RE: Regex = Regex::new(r"\A\*").unwrap();
@@ -85,6 +86,11 @@ impl Lexer {
         } else if DIV_RE.is_match(temp) {
             strip_input = DIV_RE.replace(temp, "");
             token = Token::new(SubToken::Divide, None);
+        } else if NEG_RE.is_match(temp) {
+            use std::str::FromStr;
+            let value: Option<f64> = f64::from_str(NEG_RE.captures(temp).unwrap().at(0).unwrap()).ok();
+            strip_input = NEG_RE.replace(temp, "");
+            token = Token::new(SubToken::Number, value);
         } else if NUM_RE.is_match(temp) {
             use std::str::FromStr;
             let value: Option<f64> = f64::from_str(NUM_RE.captures(temp).unwrap().at(0).unwrap()).ok();
@@ -105,6 +111,7 @@ impl Lexer {
         }
         self.input = strip_input;
         self.previous_token = Some(token.clone());
+        println!("{:?}", token);
         Ok(token)
     }
     pub fn revert(&mut self) {

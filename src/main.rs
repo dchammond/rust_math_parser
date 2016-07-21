@@ -7,7 +7,7 @@ fn main() {
     println!("Welcome to Rust-Calculus!");
     println!("To evaluate an expression, simply type one in and hit RETURN.");
     println!("To set a variable, simply type VAR_NAME=EXPRESSION and hit RETURN.");
-    println!("To define a function, simply type FUNC_NAME=EXPRESSION and hit RETURN.");
+    println!("To define a function, simply type FUNC_NAME(PARAM0,..,PARAMN=EXPRESSION and hit RETURN.");
     println!("Valid commands are: sym_int, int, sym_def, and def.");
     println!("Type 'quit' to exit.");
     let stdin = io::stdin();
