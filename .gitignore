@@ -8,3 +8,6 @@ Cargo.lock
 
 # VS Code stuff
 /.vscode/
+
+# Mac stuff
+.DS_Store
