@@ -8,6 +8,7 @@ pub mod parser;
 #[cfg(test)]
 mod tests {
     use parser;
+    use std::f64;
     #[test]
     fn addition() {
         let input = String::from("1 + 2");
@@ -31,6 +32,15 @@ mod tests {
         let input = String::from("15 / 3");
         let mut my_parser = parser::Parser::new(input);
         assert!(my_parser.parse().unwrap() == (15.0/3.0) as f64);
+    }
+    #[test]
+    fn power() {
+        let input = String::from("4 ^ 7");
+        let mut my_parser = parser::Parser::new(input);
+        assert!(my_parser.parse().unwrap() == (f64::powf(4.0, 7.0)) as f64);
+        let input = String::from("4 ^ 7 ^ 8");
+        let mut my_parser = parser::Parser::new(input);
+        assert!(my_parser.parse().unwrap() == (f64::powf(f64::powf(4.0, 7.0), 8.0) as f64));
     }
     #[test]
     fn end() {
