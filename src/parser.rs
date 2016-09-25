@@ -105,6 +105,17 @@ impl Parser {
                         Err(msg) => return Err(msg)
                     };
                 }
+                lexer::SubToken::Power => {
+                    let factor2: f64 = match self.number() {
+                        Ok(x) => x,
+                        Err(msg) => return Err(msg)
+                    };
+                    factor1 = factor1.powf(factor2);
+                    token = match self.lexer.get_next_token() {
+                        Ok(t) => t,
+                        Err(msg) => return Err(msg)
+                    };
+                }
                 _ => {
                     break;
                 }

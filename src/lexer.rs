@@ -9,6 +9,7 @@ pub enum SubToken {
     Minus,
     Multiply,
     Divide,
+    Power,
 
     Number,
 
@@ -68,6 +69,7 @@ impl Lexer {
             static ref MINUS_RE: Regex = Regex::new(r"\A-").unwrap();
             static ref MULT_RE: Regex = Regex::new(r"\A\*").unwrap();
             static ref DIV_RE: Regex = Regex::new(r"\A/").unwrap();
+            static ref POW_RE: Regex = Regex::new(r"\A\^").unwrap();
             static ref NUM_RE: Regex = Regex::new(r"\A\d+(\.\d+)?").unwrap();
             static ref LPAREN_RE: Regex = Regex::new(r"\A\(").unwrap();
             static ref RPAREN_RE: Regex = Regex::new(r"\A\)").unwrap();
@@ -86,6 +88,9 @@ impl Lexer {
         } else if DIV_RE.is_match(temp) {
             strip_input = DIV_RE.replace(temp, "");
             token = Token::new(SubToken::Divide, None);
+        } else if POW_RE.is_match(temp) {
+            strip_input = POW_RE.replace(temp, "");
+            token = Token::new(SubToken::Power, None);
         } else if NEG_RE.is_match(temp) {
             use std::str::FromStr;
             let value: Option<f64> = f64::from_str(NEG_RE.captures(temp).unwrap().at(0).unwrap()).ok();
@@ -111,6 +116,7 @@ impl Lexer {
         }
         self.input = strip_input;
         self.previous_token = Some(token.clone());
+        println!("{:?}", token);
         Ok(token)
     }
     pub fn revert(&mut self) {
