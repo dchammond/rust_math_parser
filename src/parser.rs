@@ -32,14 +32,17 @@ impl Parser {
         }
     }
     pub fn expression(&mut self) -> Result<f64, String> {
+        println!("Problem");
         let mut component1: f64 = match self.factor() {
             Ok(x) => x,
             Err(msg) => return Err(msg)
         };
+        println!("Nope");
         let mut token: Token = match self.lexer.get_next_token() {
             Ok(t) => t,
             Err(msg) => return Err(msg)
         };
+        println!("Nope2");
         loop {
             match token.get_kind() {
                 lexer::SubToken::Plus => {
@@ -111,6 +114,17 @@ impl Parser {
                         Err(msg) => return Err(msg)
                     };
                     factor1 = factor1.powf(factor2);
+                    token = match self.lexer.get_next_token() {
+                        Ok(t) => t,
+                        Err(msg) => return Err(msg)
+                    };
+                }
+                lexer::SubToken::Modulo => {
+                    let factor2: f64 = match self.number() {
+                        Ok(x) => x,
+                        Err(msg) => return Err(msg)
+                    };
+                    factor1 = factor1 % factor2;
                     token = match self.lexer.get_next_token() {
                         Ok(t) => t,
                         Err(msg) => return Err(msg)

@@ -43,6 +43,24 @@ mod tests {
         assert!(my_parser.parse().unwrap() == (f64::powf(f64::powf(4.0, 7.0), 8.0) as f64));
     }
     #[test]
+    fn basic_modulo() {
+        let input = String::from("0 % 7");
+        let mut my_parser = parser::Parser::new(input);
+        assert!(my_parser.parse().unwrap() == ((0 % 7) as f64));
+        let input = String::from("1 % 7");
+        let mut my_parser = parser::Parser::new(input);
+        assert!(my_parser.parse().unwrap() == ((1 % 7) as f64));
+    }
+    #[test]
+    fn negative_modulo() {
+        let input = String::from("-1 % 7");
+        let mut my_parser = parser::Parser::new(input);
+        assert!(my_parser.parse().unwrap() == ((-1 % 7) as f64));
+        let input = String::from("(-1) % 7");
+        let mut my_parser = parser::Parser::new(input);
+        assert!(my_parser.parse().unwrap() == (((-1) % 7) as f64));
+    }
+    #[test]
     fn end() {
         let input = String::from("");
         let mut my_parser = parser::Parser::new(input);

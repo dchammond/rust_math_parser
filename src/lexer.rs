@@ -10,6 +10,7 @@ pub enum SubToken {
     Multiply,
     Divide,
     Power,
+    Modulo,
 
     Number,
 
@@ -70,6 +71,7 @@ impl Lexer {
             static ref MULT_RE: Regex = Regex::new(r"\A\*").unwrap();
             static ref DIV_RE: Regex = Regex::new(r"\A/").unwrap();
             static ref POW_RE: Regex = Regex::new(r"\A\^").unwrap();
+            static ref MOD_RE: Regex = Regex::new(r"\A%").unwrap();
             static ref NUM_RE: Regex = Regex::new(r"\A\d+(\.\d+)?").unwrap();
             static ref LPAREN_RE: Regex = Regex::new(r"\A\(").unwrap();
             static ref RPAREN_RE: Regex = Regex::new(r"\A\)").unwrap();
@@ -91,6 +93,9 @@ impl Lexer {
         } else if POW_RE.is_match(temp) {
             strip_input = POW_RE.replace(temp, "");
             token = Token::new(SubToken::Power, None);
+        } else if MOD_RE.is_match(temp) {
+            strip_input = MOD_RE.replace(temp, "");
+            token = Token::new(SubToken::Modulo, None);
         } else if NEG_RE.is_match(temp) {
             use std::str::FromStr;
             let value: Option<f64> = f64::from_str(NEG_RE.captures(temp).unwrap().at(0).unwrap()).ok();
