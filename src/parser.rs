@@ -32,17 +32,14 @@ impl Parser {
         }
     }
     pub fn expression(&mut self) -> Result<f64, String> {
-        println!("Problem");
         let mut component1: f64 = match self.factor() {
             Ok(x) => x,
             Err(msg) => return Err(msg)
         };
-        println!("Nope");
         let mut token: Token = match self.lexer.get_next_token() {
             Ok(t) => t,
             Err(msg) => return Err(msg)
         };
-        println!("Nope2");
         loop {
             match token.get_kind() {
                 lexer::SubToken::Plus => {
@@ -159,6 +156,12 @@ impl Parser {
                 value = match token.get_value() {
                     Some(v) => v,
                     None => return Err(String::from("No value"))
+                };
+            }
+            lexer::SubToken::Minus => {
+                value = match self.factor() {
+                    Ok(x) => x*-1.0,
+                    Err(msg) => return Err(msg)
                 };
             }
             _ => {
