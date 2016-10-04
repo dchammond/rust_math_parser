@@ -79,6 +79,21 @@ mod tests {
         assert_eq!(my_parser.parse().unwrap(), (((-1) % 7) as f64));
     }
     #[test]
+    fn order_of_operations() {
+        let input = String::from("4+5*7");
+        let mut my_parser = parser::Parser::new(input);
+        assert_eq!(my_parser.parse().unwrap(), ((4+(5*7)) as f64));
+        let input = String::from("-15/7");
+        let mut my_parser = parser::Parser::new(input);
+        assert_eq!(my_parser.parse().unwrap(), (((-15.0)/7.0) as f64));
+        let input = String::from("-2^0.5");
+        let mut my_parser = parser::Parser::new(input);
+        assert_eq!(my_parser.parse().unwrap(), ((-1.0*f64::powf(2.0, 0.5)) as f64));
+        let input = String::from("(-2)^0.5");
+        let mut my_parser = parser::Parser::new(input);
+        assert_eq!(my_parser.parse().unwrap().is_nan(), ((f64::powf(-2.0, 0.5)) as f64).is_nan());
+    }
+    #[test]
     fn end() {
         let input = String::from("");
         let mut my_parser = parser::Parser::new(input);
