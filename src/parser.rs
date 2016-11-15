@@ -1,5 +1,7 @@
 #![allow(dead_code)]
 
+use regex::Regex;
+use std::collections::HashMap;
 use lexer;
 
 pub type Token = lexer::Token;
@@ -7,11 +9,13 @@ pub type Lexer = lexer::Lexer;
 
 pub struct Parser {
     lexer: Lexer,
+    variables: HashMap<String, f64>,
+    variable_regex: Regex,
 }
 
 impl Parser {
     pub fn new() -> Self {
-        Parser{lexer: Lexer::new()}
+        Parser{lexer: Lexer::new(), variables: HashMap::new(), variable_regex: Regex::new(r"\A\w+=").unwrap()}
     }
     pub fn parse(&mut self, input: String) -> Result<f64, String> {
         self.lexer.set_input(input);
