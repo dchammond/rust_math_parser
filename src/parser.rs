@@ -15,10 +15,17 @@ pub struct Parser {
 
 impl Parser {
     pub fn new() -> Self {
-        Parser{lexer: Lexer::new(), variables: HashMap::new(), variable_regex: Regex::new(r"\A\w+=").unwrap()}
+        Parser{lexer: Lexer::new(), variables: HashMap::new(), variable_regex: Regex::new(r"\A(\w+)=").unwrap()}
     }
     pub fn parse(&mut self, input: String) -> Result<f64, String> {
-        self.lexer.set_input(input);
+        let temp = &(input.clone())[..];
+        let mut variable: String = String::default();
+        if self.variable_regex.is_match(temp) {
+            variable = String::from(self.variable_regex.captures(temp).unwrap().at(1).unwrap());
+            self.lexer.set_input(self.variable_regex.replace(temp, ""));
+        } else {
+            self.lexer.set_input(input);
+        }
         let expression_value: f64 = match self.expression() {
             Ok(v) => v,
             Err(msg) => return Err(msg)
@@ -29,6 +36,9 @@ impl Parser {
         };
         match token.get_kind() {
             lexer::SubToken::End => {
+                if variable != String::default() {
+                    self.variables.insert(variable, expression_value);
+                }
                 return Ok(expression_value);
             }
             _ => {
