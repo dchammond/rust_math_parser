@@ -46,14 +46,17 @@ impl Token {
 
 #[derive(Debug)]
 pub struct Lexer {
-    input: String,
+    input: Option<String>,
     return_previous_token: bool,
-    previous_token: Option<Token>
+    previous_token: Option<Token>,
 }
 
 impl Lexer {
-    pub fn new(input: String) -> Self {
-        Lexer{input: input, return_previous_token: false, previous_token: None}
+    pub fn new() -> Self {
+        Lexer{input: None, return_previous_token: false, previous_token: None}
+    }
+    pub fn set_input(&mut self, input: String) {
+        self.input = Some(input);
     }
     pub fn get_next_token(&mut self) -> Result<Token, String> {
         if self.return_previous_token {
@@ -63,7 +66,7 @@ impl Lexer {
                 None => Err(String::from("No previous token"))
             }
         }
-        let mut strip_input = strip_white_space(self.input.clone());
+        let mut strip_input = strip_white_space(self.input.clone().unwrap());
         lazy_static! {
             static ref PLUS_RE: Regex = Regex::new(r"\A\+").unwrap();
             static ref MINUS_RE: Regex = Regex::new(r"\A-").unwrap();
@@ -113,7 +116,7 @@ impl Lexer {
             error.push_str(temp);
             return Err(error);
         }
-        self.input = strip_input;
+        self.input = Some(strip_input);
         self.previous_token = Some(token.clone());
         Ok(token)
     }

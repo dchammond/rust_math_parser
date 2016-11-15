@@ -6,14 +6,15 @@ pub type Token = lexer::Token;
 pub type Lexer = lexer::Lexer;
 
 pub struct Parser {
-    lexer: Lexer
+    lexer: Lexer,
 }
 
 impl Parser {
-    pub fn new(input: String) -> Self {
-        Parser{lexer: Lexer::new(input)}
+    pub fn new() -> Self {
+        Parser{lexer: Lexer::new()}
     }
-    pub fn parse(&mut self) -> Result<f64, String> {
+    pub fn parse(&mut self, input: String) -> Result<f64, String> {
+        self.lexer.set_input(input);
         let expression_value: f64 = match self.expression() {
             Ok(v) => v,
             Err(msg) => return Err(msg)

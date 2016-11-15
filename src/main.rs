@@ -12,6 +12,7 @@ fn main() {
     println!("Type 'quit' to exit.");
     let stdin = io::stdin();
     let mut stdout = io::stdout();
+    let mut my_parser: rust_math_parser::parser::Parser = rust_math_parser::parser::Parser::new();
     loop {
         let mut input: String = String::new();
         print!(">>>> ");
@@ -24,8 +25,7 @@ fn main() {
             println!("Exiting...");
             break;
         }
-        let mut my_parser: rust_math_parser::parser::Parser = rust_math_parser::parser::Parser::new(input);
-        match my_parser.parse() {
+        match my_parser.parse(input) {
             Ok(x) => println!("{}", x),
             Err(msg) => println!("{}", msg)
         }
