@@ -21,6 +21,8 @@ impl Parser {
         let temp = &(input.clone())[..];
         let mut variable: String = String::default();
         if self.variable_regex.is_match(temp) {
+            // Unwrapping is safe because the match is known to exist
+            // The second element `at(1)`, is the variable name captured by the parenthesis in the regex
             variable = String::from(self.variable_regex.captures(temp).unwrap().at(1).unwrap());
             self.lexer.set_input(self.variable_regex.replace(temp, ""));
         } else {
