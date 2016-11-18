@@ -74,7 +74,7 @@ impl Lexer {
             static ref DIV_RE: Regex = Regex::new(r"\A/").unwrap();
             static ref POW_RE: Regex = Regex::new(r"\A\^").unwrap();
             static ref MOD_RE: Regex = Regex::new(r"\A%").unwrap();
-            static ref NUM_RE: Regex = Regex::new(r"\A\d+(\.\d+)?").unwrap();
+            static ref NUM_RE: Regex = Regex::new(r"(\A\d+(\.\d+)?)|(\A(\.\d+))").unwrap();
             static ref LPAREN_RE: Regex = Regex::new(r"\A\(").unwrap();
             static ref RPAREN_RE: Regex = Regex::new(r"\A\)").unwrap();
         }
