@@ -10,21 +10,23 @@ pub type Lexer = lexer::Lexer;
 pub struct Parser {
     lexer: Lexer,
     variables: HashMap<String, f64>,
-    variable_regex: Regex,
 }
 
 impl Parser {
     pub fn new() -> Self {
-        Parser{lexer: Lexer::new(), variables: HashMap::new(), variable_regex: Regex::new(r"\A(\w+)=").unwrap()}
+        Parser{lexer: Lexer::new(), variables: HashMap::new()}
     }
     pub fn parse(&mut self, input: String) -> Result<f64, String> {
+        lazy_static! {
+            static ref VAR_ASSIGN_RE: Regex = Regex::new(r"\A(\w+)=").unwrap();
+        }
         let temp = &(input.clone())[..];
         let mut variable: String = String::default();
-        if self.variable_regex.is_match(temp) {
+        if VAR_ASSIGN_RE.is_match(temp) {
             // Unwrapping is safe because the match is known to exist
             // The second element `at(1)`, is the variable name captured by the parenthesis in the regex
-            variable = String::from(self.variable_regex.captures(temp).unwrap().at(1).unwrap());
-            self.lexer.set_input(self.variable_regex.replace(temp, ""));
+            variable = String::from(VAR_ASSIGN_RE.captures(temp).unwrap().at(1).unwrap());
+            self.lexer.set_input(VAR_ASSIGN_RE.replace(temp, ""));
         } else {
             self.lexer.set_input(input);
         }
