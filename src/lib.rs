@@ -155,6 +155,12 @@ mod tests {
         let input = String::from("3 + 8/5 -1 -2*5");
         let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (3.0+8.0/5.0-1.0-2.0*5.0) as f64);
+        let input = String::from(".67");
+        let mut my_parser = parser::Parser::new();
+        assert_eq!(my_parser.parse(input).unwrap(), (0.67) as f64);
+        let input = String::from("5+.67");
+        let mut my_parser = parser::Parser::new();
+        assert_eq!(my_parser.parse(input).unwrap(), (5.0+0.67) as f64);
     }
     #[test]
     fn bad_tokens() {
