@@ -19,17 +19,26 @@ impl Parser {
     pub fn parse(&mut self, input: String) -> Result<f64, String> {
         lazy_static! {
             static ref VAR_ASSIGN_RE: Regex = Regex::new(r"\A(\w+)=").unwrap();
+            static ref VAR_USAGE_RE: Regex = Regex::new(r"[a-zA-Z]+").unwrap();
+            // Theoretical function matching might look like [a-zA-Z]+\( etc...
         }
-        let temp = &(input.clone())[..];
-        let mut variable: String = String::default();
-        if VAR_ASSIGN_RE.is_match(temp) {
-            // Unwrapping is safe because the match is known to exist
-            // The second element `at(1)`, is the variable name captured by the parenthesis in the regex
-            variable = String::from(VAR_ASSIGN_RE.captures(temp).unwrap().at(1).unwrap());
-            self.lexer.set_input(VAR_ASSIGN_RE.replace(temp, ""));
-        } else {
-            self.lexer.set_input(input);
+        let mut internal_input = input.clone();
+        let mut new_variable: String = String::default();
+        if VAR_ASSIGN_RE.is_match(internal_input.as_ref()) {
+            new_variable = String::from(VAR_ASSIGN_RE.captures(internal_input.as_ref()).unwrap().at(1).unwrap());
+            internal_input = VAR_ASSIGN_RE.replace(internal_input.as_ref(), "");
         }
+        while VAR_USAGE_RE.is_match(internal_input.as_ref()) {
+            let variable = String::from(VAR_USAGE_RE.captures(internal_input.as_ref()).unwrap().at(0).unwrap());
+            if let Some(value) = self.variables.get(&variable) {
+                internal_input = VAR_USAGE_RE.replace(internal_input.as_ref(), &(value.to_string())[..]);
+            } else {
+                let mut msg = String::from("Unknown variable: ");
+                msg.push_str(variable.as_ref());
+                return Err(msg);
+            }
+        }
+        self.lexer.set_input(internal_input);
         let expression_value: f64 = match self.expression() {
             Ok(v) => v,
             Err(msg) => return Err(msg)
@@ -40,8 +49,8 @@ impl Parser {
         };
         match token.get_kind() {
             lexer::SubToken::End => {
-                if variable != String::default() {
-                    self.variables.insert(variable, expression_value);
+                if new_variable != String::default() {
+                    self.variables.insert(new_variable, expression_value);
                 }
                 return Ok(expression_value);
             }
