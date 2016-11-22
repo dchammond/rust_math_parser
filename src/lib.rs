@@ -39,7 +39,6 @@ mod tests {
         let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (f64::powf(4.0, 7.0)) as f64);
         let input = String::from("4 ^ 7 ^ 8");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (f64::powf(f64::powf(4.0, 7.0), 8.0) as f64));
     }
     #[test]
@@ -48,7 +47,6 @@ mod tests {
         let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (-2 as f64));
         let input = String::from("-(2)");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (-2 as f64));
     }
     #[test]
@@ -57,7 +55,6 @@ mod tests {
         let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), ((-1*(2+3)) as f64));
         let input = String::from("15-(-(2+3))");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), ((15-(-1*(2+3))) as f64));
     }
     #[test]
@@ -66,7 +63,6 @@ mod tests {
         let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), ((0 % 7) as f64));
         let input = String::from("1 % 7");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), ((1 % 7) as f64));
     }
     #[test]
@@ -75,7 +71,6 @@ mod tests {
         let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), ((-1 % 7) as f64));
         let input = String::from("(-1) % 7");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (((-1) % 7) as f64));
     }
     #[test]
@@ -84,13 +79,10 @@ mod tests {
         let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), ((4+(5*7)) as f64));
         let input = String::from("-15/7");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (((-15.0)/7.0) as f64));
         let input = String::from("-2^0.5");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), ((-1.0*f64::powf(2.0, 0.5)) as f64));
         let input = String::from("(-2)^0.5");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap().is_nan(), ((f64::powf(-2.0, 0.5)) as f64).is_nan());
     }
     #[test]
@@ -105,16 +97,12 @@ mod tests {
         let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (12-8) as f64);
         let input = String::from("142        -9   ");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (142-9) as f64);
         let input = String::from("72+  15");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (72+15) as f64);
         let input = String::from(" 12*  4");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (12*4) as f64);
         let input = String::from(" 50/10");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (50.0/10.0) as f64);
     }
     #[test]
@@ -123,7 +111,6 @@ mod tests {
         let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (2-4+6-1-1-0+8) as f64);
         let input = String::from("1 -1   + 2   - 2   +  4 - 4 +    6");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (1-1+2-2+4-4+6) as f64);
     }
     #[test]
@@ -132,7 +119,6 @@ mod tests {
         let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (2*4*6*1*1*0*8) as f64);
         let input = String::from("1 *1   * 2   * 2   *  4 * 4 *    6");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (1*1*2*2*4*4*6) as f64);
     }
     #[test]
@@ -141,7 +127,6 @@ mod tests {
         let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (2.0*3.0-4.0*5.0+6.0/3.0) as f64);
         let input = String::from("2*3*4/8 -   5/2*4 +  6 + 0/3   ");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (2.0*3.0*4.0/8.0-5.0/2.0*4.0+6.0+0.0/3.0) as f64);
     }
     #[test]
@@ -150,16 +135,12 @@ mod tests {
         let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (10.0/4.0) as f64);
         let input = String::from("5/3");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (5.0/3.0) as f64);
         let input = String::from("3 + 8/5 -1 -2*5");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (3.0+8.0/5.0-1.0-2.0*5.0) as f64);
         let input = String::from(".67");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (0.67) as f64);
         let input = String::from("5+.67");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (5.0+0.67) as f64);
     }
     #[test]
@@ -168,10 +149,8 @@ mod tests {
         let mut my_parser = parser::Parser::new();
         assert!(my_parser.parse(input).is_err());
         let input = String::from("  7 &amp; 2");
-        let mut my_parser = parser::Parser::new();
         assert!(my_parser.parse(input).is_err());
         let input = String::from("  %");
-        let mut my_parser = parser::Parser::new();
         assert!(my_parser.parse(input).is_err());
     }
     #[test]
@@ -180,7 +159,6 @@ mod tests {
         let mut my_parser = parser::Parser::new();
         assert!(my_parser.parse(input).is_err());
         let input = String::from(" 5 * / 6");
-        let mut my_parser = parser::Parser::new();
         assert!(my_parser.parse(input).is_err());
     }
     #[test]
@@ -189,7 +167,6 @@ mod tests {
         let mut my_parser = parser::Parser::new();
         assert!(my_parser.parse(input).unwrap().is_infinite());
         let input = String::from(" 2 - 1 + 14/0 + 7");
-        let mut my_parser = parser::Parser::new();
         assert!(my_parser.parse(input).unwrap().is_infinite());
     }
     #[test]
@@ -204,7 +181,6 @@ mod tests {
         let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (5.0+2.0*3.0-1.0+7.0*8.0) as f64);
         let input = String::from("(67 + 2 * 3 - 67 + 2/1 - 7)");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (67.0+2.0*3.0-67.0+2.0/1.0-7.0) as f64);
     }
     #[test]
@@ -213,7 +189,6 @@ mod tests {
         let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), ((2.0)+(17.0*2.0-30.0)*(5.0)+2.0-(8.0/2.0)*4.0) as f64);
         let input = String::from("(5*7/5) + (23) - 5 * (98-4)/(6*7-42)");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), ((5.0*7.0/5.0)+(23.0)-5.0*(98.0-4.0)/(6.0*7.0-42.0)) as f64);
     }
     #[test]
@@ -222,7 +197,6 @@ mod tests {
         let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), ((((((5)))))) as f64);
         let input = String::from("(( ((2)) + 4))*((5))");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (((((2.0))+4.0))*((5.0))) as f64);
     }
     #[test]
@@ -231,13 +205,28 @@ mod tests {
         let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (2.0+(5.0*2.0)) as f64);
         let input = String::from("(((((4))))");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (4.0) as f64);
         let input = String::from("((2)) * ((3");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (2.0*3.0) as f64);
         let input = String::from("((9)) * ((1)");
-        let mut my_parser = parser::Parser::new();
         assert_eq!(my_parser.parse(input).unwrap(), (9.0*1.0) as f64);
+    }
+    #[test]
+    fn variables() {
+        let input = String::from("x = 5");
+        let mut my_parser = parser::Parser::new();
+        assert_eq!(my_parser.parse(input).unwrap(), (5.0) as f64);
+        let input = String::from("x");
+        assert_eq!(my_parser.parse(input).unwrap(), (5.0) as f64);
+        let input = String::from("y");
+        assert!(my_parser.parse(input).is_err());
+        let input = String::from("y = x ^ 5");
+        assert_eq!(my_parser.parse(input).unwrap(), (f64::powf(5.0, 5.0)) as f64);
+        let input = String::from("x = x + 1");
+        assert_eq!(my_parser.parse(input).unwrap(), (5.0 + 1.0) as f64);
+        let input = String::from("x");
+        assert_eq!(my_parser.parse(input).unwrap(), (6.0) as f64);
+        let input = String::from("y % x");
+        assert_eq!(my_parser.parse(input).unwrap(), (f64::powf(5.0, 5.0) % 6.0) as f64);
     }
 }
