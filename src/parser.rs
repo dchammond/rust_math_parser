@@ -18,8 +18,8 @@ impl Parser {
     }
     pub fn parse(&mut self, input: String) -> Result<f64, String> {
         lazy_static! {
-            static ref VAR_ASSIGN_RE: Regex = Regex::new(r"\A(\w+)=").unwrap();
-            static ref VAR_USAGE_RE: Regex = Regex::new(r"[a-zA-Z]+").unwrap();
+            static ref VAR_ASSIGN_RE: Regex = Regex::new(r"\A(([a-zA-Z]|_)+)=").unwrap();
+            static ref VAR_USAGE_RE: Regex = Regex::new(r"([a-zA-Z]|_)+").unwrap();
             // Theoretical function matching might look like [a-zA-Z]+\( etc...
         }
         let mut internal_input = input.clone();
