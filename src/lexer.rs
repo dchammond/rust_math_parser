@@ -66,7 +66,7 @@ impl Lexer {
                 None => Err(String::from("No previous token"))
             }
         }
-        let mut strip_input = strip_white_space(self.input.clone().unwrap());
+        let mut strip_input = self.input.clone().unwrap();
         lazy_static! {
             static ref PLUS_RE: Regex = Regex::new(r"\A\+").unwrap();
             static ref MINUS_RE: Regex = Regex::new(r"\A-").unwrap();
@@ -123,8 +123,4 @@ impl Lexer {
     pub fn revert(&mut self) {
         self.return_previous_token = true;
     }
-}
-
-fn strip_white_space(input: String) -> String {
-    input.split_whitespace().collect::<Vec<&str>>().join("")
 }
