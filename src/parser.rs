@@ -22,7 +22,7 @@ impl Parser {
             static ref VAR_USAGE_RE: Regex = Regex::new(r"([a-zA-Z]|_)+").unwrap();
             // Theoretical function matching might look like [a-zA-Z]+\( etc...
         }
-        let mut internal_input = input.clone();
+        let mut internal_input = strip_white_space(input);
         let mut new_variable: String = String::default();
         if VAR_ASSIGN_RE.is_match(internal_input.as_ref()) {
             new_variable = String::from(VAR_ASSIGN_RE.captures(internal_input.as_ref()).unwrap().at(1).unwrap());
@@ -198,4 +198,8 @@ impl Parser {
         }
         Ok(value)
     }
+}
+
+fn strip_white_space(input: String) -> String {
+    input.split_whitespace().collect::<Vec<&str>>().join("")
 }
