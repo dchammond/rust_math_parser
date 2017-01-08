@@ -7,31 +7,35 @@ use lexer;
 pub type Token = lexer::Token;
 pub type Lexer = lexer::Lexer;
 
+#[allow(non_snake_case)]
+#[derive(Debug)]
 pub struct Parser {
     lexer: Lexer,
     variables: HashMap<String, f64>,
+    VAR_ASSIGN_RE: Regex,
+    VAR_USAGE_RE: Regex
 }
 
 impl Parser {
     pub fn new() -> Self {
-        Parser{lexer: Lexer::new(), variables: HashMap::new()}
+        Parser {
+            lexer: Lexer::new(),
+            variables: HashMap::new(),
+            VAR_ASSIGN_RE: Regex::new(r"\A(([a-zA-Z]|_)+)=").unwrap(),
+            VAR_USAGE_RE: Regex::new(r"([a-zA-Z]|_)+").unwrap()
+        }
     }
     pub fn parse(&mut self, input: String) -> Result<f64, String> {
-        lazy_static! {
-            static ref VAR_ASSIGN_RE: Regex = Regex::new(r"\A(([a-zA-Z]|_)+)=").unwrap();
-            static ref VAR_USAGE_RE: Regex = Regex::new(r"([a-zA-Z]|_)+").unwrap();
-            // Theoretical function matching might look like [a-zA-Z]+\( etc...
-        }
         let mut internal_input = strip_white_space(input);
         let mut new_variable: String = String::default();
-        if VAR_ASSIGN_RE.is_match(internal_input.as_ref()) {
-            new_variable = String::from(VAR_ASSIGN_RE.captures(internal_input.as_ref()).unwrap().get(1).unwrap().as_str());
-            internal_input = VAR_ASSIGN_RE.replace(internal_input.as_ref(), "").into_owned();
+        if self.VAR_ASSIGN_RE.is_match(internal_input.as_ref()) {
+            new_variable = String::from(self.VAR_ASSIGN_RE.captures(internal_input.as_ref()).unwrap().get(1).unwrap().as_str());
+            internal_input = self.VAR_ASSIGN_RE.replace(internal_input.as_ref(), "").into_owned();
         }
-        while VAR_USAGE_RE.is_match(internal_input.as_ref()) {
-            let variable = String::from(VAR_USAGE_RE.captures(internal_input.as_ref()).unwrap().get(0).unwrap().as_str());
+        while self.VAR_USAGE_RE.is_match(internal_input.as_ref()) {
+            let variable = String::from(self.VAR_USAGE_RE.captures(internal_input.as_ref()).unwrap().get(0).unwrap().as_str());
             if let Some(value) = self.variables.get(&variable) {
-                internal_input = VAR_USAGE_RE.replace(internal_input.as_ref(), &(value.to_string())[..]).into_owned();
+                internal_input = self.VAR_USAGE_RE.replace(internal_input.as_ref(), &(value.to_string())[..]).into_owned();
             } else {
                 let mut msg = String::from("Unknown variable: ");
                 msg.push_str(variable.as_ref());

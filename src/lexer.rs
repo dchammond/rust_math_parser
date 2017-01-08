@@ -44,16 +44,39 @@ impl Token {
     }
 }
 
+#[allow(non_snake_case)]
 #[derive(Debug)]
 pub struct Lexer {
     input: Option<String>,
     return_previous_token: bool,
     previous_token: Option<Token>,
+    PLUS_RE: Regex,
+    MINUS_RE: Regex,
+    MULT_RE: Regex,
+    DIV_RE: Regex,
+    POW_RE: Regex,
+    MOD_RE: Regex,
+    NUM_RE: Regex,
+    LPAREN_RE: Regex,
+    RPAREN_RE: Regex
 }
 
 impl Lexer {
     pub fn new() -> Self {
-        Lexer{input: None, return_previous_token: false, previous_token: None}
+        Lexer {
+            input: None,
+            return_previous_token: false,
+            previous_token: None,
+            PLUS_RE: Regex::new(r"\A\+").unwrap(),
+            MINUS_RE: Regex::new(r"\A-").unwrap(),
+            MULT_RE: Regex::new(r"\A\*").unwrap(),
+            DIV_RE: Regex::new(r"\A/").unwrap(),
+            POW_RE: Regex::new(r"\A\^").unwrap(),
+            MOD_RE: Regex::new(r"\A%").unwrap(),
+            NUM_RE: Regex::new(r"(\A\d+(\.\d+)?)|(\A(\.\d+))").unwrap(),
+            LPAREN_RE: Regex::new(r"\A\(").unwrap(),
+            RPAREN_RE: Regex::new(r"\A\)").unwrap()
+        }
     }
     pub fn set_input(&mut self, input: String) {
         self.input = Some(input);
@@ -67,47 +90,36 @@ impl Lexer {
             }
         }
         let mut strip_input = self.input.clone().unwrap();
-        lazy_static! {
-            static ref PLUS_RE: Regex = Regex::new(r"\A\+").unwrap();
-            static ref MINUS_RE: Regex = Regex::new(r"\A-").unwrap();
-            static ref MULT_RE: Regex = Regex::new(r"\A\*").unwrap();
-            static ref DIV_RE: Regex = Regex::new(r"\A/").unwrap();
-            static ref POW_RE: Regex = Regex::new(r"\A\^").unwrap();
-            static ref MOD_RE: Regex = Regex::new(r"\A%").unwrap();
-            static ref NUM_RE: Regex = Regex::new(r"(\A\d+(\.\d+)?)|(\A(\.\d+))").unwrap();
-            static ref LPAREN_RE: Regex = Regex::new(r"\A\(").unwrap();
-            static ref RPAREN_RE: Regex = Regex::new(r"\A\)").unwrap();
-        }
         let token: Token;
         let temp = &(strip_input.clone())[..];
-        if PLUS_RE.is_match(temp) {
-            strip_input = PLUS_RE.replace(temp, "").into_owned();
+        if self.PLUS_RE.is_match(temp) {
+            strip_input = self.PLUS_RE.replace(temp, "").into_owned();
             token = Token::new(SubToken::Plus, None);
-        } else if MINUS_RE.is_match(temp) {
-            strip_input = MINUS_RE.replace(temp, "").into_owned();
+        } else if self.MINUS_RE.is_match(temp) {
+            strip_input = self.MINUS_RE.replace(temp, "").into_owned();
             token = Token::new(SubToken::Minus, None);
-        } else if MULT_RE.is_match(temp) {
-            strip_input = MULT_RE.replace(temp, "").into_owned();
+        } else if self.MULT_RE.is_match(temp) {
+            strip_input = self.MULT_RE.replace(temp, "").into_owned();
             token = Token::new(SubToken::Multiply, None);
-        } else if DIV_RE.is_match(temp) {
-            strip_input = DIV_RE.replace(temp, "").into_owned();
+        } else if self.DIV_RE.is_match(temp) {
+            strip_input = self.DIV_RE.replace(temp, "").into_owned();
             token = Token::new(SubToken::Divide, None);
-        } else if POW_RE.is_match(temp) {
-            strip_input = POW_RE.replace(temp, "").into_owned();
+        } else if self.POW_RE.is_match(temp) {
+            strip_input = self.POW_RE.replace(temp, "").into_owned();
             token = Token::new(SubToken::Power, None);
-        } else if MOD_RE.is_match(temp) {
-            strip_input = MOD_RE.replace(temp, "").into_owned();
+        } else if self.MOD_RE.is_match(temp) {
+            strip_input = self.MOD_RE.replace(temp, "").into_owned();
             token = Token::new(SubToken::Modulo, None);
-        } else if NUM_RE.is_match(temp) {
+        } else if self.NUM_RE.is_match(temp) {
             use std::str::FromStr;
-            let value: Option<f64> = f64::from_str(NUM_RE.captures(temp).unwrap().get(0).unwrap().as_str()).ok();
-            strip_input = NUM_RE.replace(temp, "").into_owned();
+            let value: Option<f64> = f64::from_str(self.NUM_RE.captures(temp).unwrap().get(0).unwrap().as_str()).ok();
+            strip_input = self.NUM_RE.replace(temp, "").into_owned();
             token = Token::new(SubToken::Number, value);
-        } else if LPAREN_RE.is_match(temp) {
-            strip_input = LPAREN_RE.replace(temp, "").into_owned();
+        } else if self.LPAREN_RE.is_match(temp) {
+            strip_input = self.LPAREN_RE.replace(temp, "").into_owned();
             token = Token::new(SubToken::LParen, None);
-        } else if RPAREN_RE.is_match(temp) {
-            strip_input = RPAREN_RE.replace(temp, "").into_owned();
+        } else if self.RPAREN_RE.is_match(temp) {
+            strip_input = self.RPAREN_RE.replace(temp, "").into_owned();
             token = Token::new(SubToken::RParen, None);
         } else if strip_input.is_empty() {
             token = Token::new(SubToken::End, None);
