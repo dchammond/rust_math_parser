@@ -81,33 +81,33 @@ impl Lexer {
         let token: Token;
         let temp = &(strip_input.clone())[..];
         if PLUS_RE.is_match(temp) {
-            strip_input = PLUS_RE.replace(temp, "");
+            strip_input = PLUS_RE.replace(temp, "").into_owned();
             token = Token::new(SubToken::Plus, None);
         } else if MINUS_RE.is_match(temp) {
-            strip_input = MINUS_RE.replace(temp, "");
+            strip_input = MINUS_RE.replace(temp, "").into_owned();
             token = Token::new(SubToken::Minus, None);
         } else if MULT_RE.is_match(temp) {
-            strip_input = MULT_RE.replace(temp, "");
+            strip_input = MULT_RE.replace(temp, "").into_owned();
             token = Token::new(SubToken::Multiply, None);
         } else if DIV_RE.is_match(temp) {
-            strip_input = DIV_RE.replace(temp, "");
+            strip_input = DIV_RE.replace(temp, "").into_owned();
             token = Token::new(SubToken::Divide, None);
         } else if POW_RE.is_match(temp) {
-            strip_input = POW_RE.replace(temp, "");
+            strip_input = POW_RE.replace(temp, "").into_owned();
             token = Token::new(SubToken::Power, None);
         } else if MOD_RE.is_match(temp) {
-            strip_input = MOD_RE.replace(temp, "");
+            strip_input = MOD_RE.replace(temp, "").into_owned();
             token = Token::new(SubToken::Modulo, None);
         } else if NUM_RE.is_match(temp) {
             use std::str::FromStr;
-            let value: Option<f64> = f64::from_str(NUM_RE.captures(temp).unwrap().at(0).unwrap()).ok();
-            strip_input = NUM_RE.replace(temp, "");
+            let value: Option<f64> = f64::from_str(NUM_RE.captures(temp).unwrap().get(0).unwrap().as_str()).ok();
+            strip_input = NUM_RE.replace(temp, "").into_owned();
             token = Token::new(SubToken::Number, value);
         } else if LPAREN_RE.is_match(temp) {
-            strip_input = LPAREN_RE.replace(temp, "");
+            strip_input = LPAREN_RE.replace(temp, "").into_owned();
             token = Token::new(SubToken::LParen, None);
         } else if RPAREN_RE.is_match(temp) {
-            strip_input = RPAREN_RE.replace(temp, "");
+            strip_input = RPAREN_RE.replace(temp, "").into_owned();
             token = Token::new(SubToken::RParen, None);
         } else if strip_input.is_empty() {
             token = Token::new(SubToken::End, None);

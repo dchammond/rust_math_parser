@@ -25,13 +25,13 @@ impl Parser {
         let mut internal_input = strip_white_space(input);
         let mut new_variable: String = String::default();
         if VAR_ASSIGN_RE.is_match(internal_input.as_ref()) {
-            new_variable = String::from(VAR_ASSIGN_RE.captures(internal_input.as_ref()).unwrap().at(1).unwrap());
-            internal_input = VAR_ASSIGN_RE.replace(internal_input.as_ref(), "");
+            new_variable = String::from(VAR_ASSIGN_RE.captures(internal_input.as_ref()).unwrap().get(1).unwrap().as_str());
+            internal_input = VAR_ASSIGN_RE.replace(internal_input.as_ref(), "").into_owned();
         }
         while VAR_USAGE_RE.is_match(internal_input.as_ref()) {
-            let variable = String::from(VAR_USAGE_RE.captures(internal_input.as_ref()).unwrap().at(0).unwrap());
+            let variable = String::from(VAR_USAGE_RE.captures(internal_input.as_ref()).unwrap().get(0).unwrap().as_str());
             if let Some(value) = self.variables.get(&variable) {
-                internal_input = VAR_USAGE_RE.replace(internal_input.as_ref(), &(value.to_string())[..]);
+                internal_input = VAR_USAGE_RE.replace(internal_input.as_ref(), &(value.to_string())[..]).into_owned();
             } else {
                 let mut msg = String::from("Unknown variable: ");
                 msg.push_str(variable.as_ref());
