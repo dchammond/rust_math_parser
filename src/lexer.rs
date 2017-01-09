@@ -22,8 +22,8 @@ pub struct Assign {
     expression: Expression
 }
 
-pub enum Func {
-    Func {
+pub enum Function {
+    Function {
         variable: Variable,
         lsep: Lsep,
         expr: Box<Expression>,
@@ -42,7 +42,7 @@ pub enum Expression {
         op: Op,
         rexpr: Box<Expression>
     },
-    Function(Func),
+    Function(Function),
     Numeric(Numeric),
     Variable(Variable),
     Expansion {
@@ -51,8 +51,8 @@ pub enum Expression {
     }
 }
 
-impl From<Func> for Expression {
-    fn from(function: Func) -> Self {
+impl From<Function> for Expression {
+    fn from(function: Function) -> Self {
         Expression::Function(function)
     }
 }
@@ -106,7 +106,7 @@ impl From<Terminating> for Value {
 pub enum NonTerminating {
     S(Statement),
     A(Assign),
-    F(Func),
+    F(Function),
     Expr(Expression)
 }
 
@@ -122,8 +122,8 @@ impl From<Assign> for NonTerminating {
     }
 }
 
-impl From<Func> for NonTerminating {
-    fn from(function: Func) -> Self {
+impl From<Function> for NonTerminating {
+    fn from(function: Function) -> Self {
         NonTerminating::F(function)
     }
 }
