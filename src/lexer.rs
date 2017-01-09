@@ -2,41 +2,80 @@
 
 pub enum Statement {
     Assignment(Assign),
-    Expr(Expr),
+    Expression(Expr),
 }
 
-pub enum Assign {
-    A(V, Expr)
+impl From<Assign> for Statement {
+    fn from(assignment: Assign) -> Self {
+        Statement::Assignment(assignment)
+    }
+}
+
+impl From<Expr> for Statement {
+    fn from(expression: Expr) -> Self {
+        Statement::Expression(expression)
+    }
+}
+
+pub struct Assign {
+    variable: V,
+    expression: Expr
 }
 
 pub enum Func {
-    Func(V, Lsep, Box<Expr>, Rsep)
+    Func {
+        variable: V,
+        lsep: Lsep,
+        expr: Box<Expr>,
+        rsep: Rsep
+    }
 }
 
 pub enum Expr {
-    ParenthizedExpression(Lsep, Box<Expr>, Rsep),
-    OperatorExpression(Box<Expr>, Op, Box<Expr>),
+    ParenthizedExpression {
+        lsep: Lsep,
+        expr: Box<Expr>,
+        rsep: Rsep
+    },
+    OperatorExpression {
+        lexpr: Box<Expr>,
+        op: Op,
+        rexpr: Box<Expr>
+    },
     Function(Func),
     Numeric(Num),
     Variable(V),
-    Expansition(Box<Expr>, Box<Expr>)
+    Expansion {
+        lexpr: Box<Expr>,
+        rexpr: Box<Expr>
+    }
 }
 
-pub enum Lsep {
-    Lsep(String)
+impl From<Func> for Expr {
+    fn from(function: Func) -> Self {
+        Expr::Function(function)
+    }
 }
 
-pub enum Rsep {
-    Rsep(String)
+impl From<Num> for Expr {
+    fn from(numeric: Num) -> Self {
+        Expr::Numeric(numeric)
+    }
 }
 
-pub enum V {
-    V(String)
+impl From<V> for Expr {
+    fn from(variable: V) -> Self {
+        Expr::Variable(variable)
+    }
 }
 
-pub enum Num {
-    Num(f64)
-}
+pub struct Lsep(String);
+
+pub struct Rsep(String);
+
+pub struct V(String);
+
+pub struct Num(f64);
 
 pub enum Op {
     Plus,
@@ -52,11 +91,47 @@ pub enum Value {
     Terminating(Terminating)
 }
 
+impl From<NonTerminating> for Value {
+    fn from(non_terminating: NonTerminating) -> Self {
+        Value::NonTerminating(non_terminating)
+    }
+}
+
+impl From<Terminating> for Value {
+    fn from(terminating: Terminating) -> Self {
+        Value::Terminating(terminating)
+    }
+}
+
 pub enum NonTerminating {
     S(Statement),
     A(Assign),
     F(Func),
     Expr(Expr)
+}
+
+impl From<Statement> for NonTerminating {
+    fn from(statement: Statement) -> Self {
+        NonTerminating::S(statement)
+    }
+}
+
+impl From<Assign> for NonTerminating {
+    fn from(assignment: Assign) -> Self {
+        NonTerminating::A(assignment)
+    }
+}
+
+impl From<Func> for NonTerminating {
+    fn from(function: Func) -> Self {
+        NonTerminating::F(function)
+    }
+}
+
+impl From<Expr> for NonTerminating {
+    fn from(expression: Expr) -> Self {
+        NonTerminating::Expr(expression)
+    }
 }
 
 pub enum Terminating {
@@ -66,7 +141,37 @@ pub enum Terminating {
     Num(Num),
     Op(Op)
 }
-// Implement From for all the things
+
+impl From<Lsep> for Terminating {
+    fn from(lsep: Lsep) -> Self {
+        Terminating::Lsep(lsep)
+    }
+}
+
+impl From<Rsep> for Terminating {
+    fn from(rsep: Rsep) -> Self {
+        Terminating::Rsep(rsep)
+    }
+}
+
+impl From<V> for Terminating {
+    fn from(variable: V) -> Self {
+        Terminating::V(variable)
+    }
+}
+
+impl From<Num> for Terminating {
+    fn from(numeric: Num) -> Self {
+        Terminating::Num(numeric)
+    }
+}
+
+impl From<Op> for Terminating {
+    fn from(operator: Op) -> Self {
+        Terminating::Op(operator)
+    }
+}
+
 pub struct Lexer {
     input: Option<String>,
     stack: Vec<Value>
@@ -83,7 +188,7 @@ impl Lexer {
         self.input = Some(input);
     }
     pub fn transform(&self) -> Value {
-        let x: Value = Value::Terminating(Terminating::Num(Num::Num(6.4)));
+        let x: Value = Value::from(Terminating::from(Num(6.4)));
         x
     }
 }
