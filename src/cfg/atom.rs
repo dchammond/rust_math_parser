@@ -1,4 +1,5 @@
-use cfg::{statement, assign, function, expression, lsep, rsep, variable, numeric, op, equal};
+use cfg::{statement, assign, function, expression,
+lsep, rsep, variable, numeric, op, equal, msep};
 
 type Lsep = lsep::Lsep;
 type Rsep = rsep::Rsep;
@@ -10,6 +11,7 @@ type Assign = assign::Assign;
 type Function = function::Function;
 type Expression = expression::Expression;
 type Equal = equal::Equal;
+type Msep = msep::Msep;
 
 pub enum Atom {
     Statement(Statement),
@@ -22,6 +24,7 @@ pub enum Atom {
     Numeric(Numeric),
     Op(Op),
     Equal(Equal),
+    Msep(Msep)
 }
 
 impl From<Statement> for Atom {
@@ -81,5 +84,11 @@ impl From<Op> for Atom {
 impl From<Equal> for Atom {
     fn from(equal: Equal) -> Self {
         Atom::Equal(equal)
+    }
+}
+
+impl From<Msep> for Atom {
+    fn from(msep: Msep) -> Self {
+        Atom::Msep(msep)
     }
 }

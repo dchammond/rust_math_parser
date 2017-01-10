@@ -1,4 +1,4 @@
-use cfg::{lsep, rsep, op, function, numeric, variable};
+use cfg::{lsep, rsep, op, function, numeric, variable, msep};
 
 type Lsep = lsep::Lsep;
 type Rsep = rsep::Rsep;
@@ -6,6 +6,7 @@ type Op = op::Op;
 type Function = function::Function;
 type Numeric = numeric::Numeric;
 type Variable = variable::Variable;
+type Msep = msep::Msep;
 
 pub enum Expression {
     ParenthizedExpression {
@@ -23,6 +24,7 @@ pub enum Expression {
     Variable(Variable),
     Expansion {
         lexpr: Box<Expression>,
+        msep: Msep,
         rexpr: Box<Expression>
     }
 }
