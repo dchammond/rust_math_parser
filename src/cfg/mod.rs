@@ -18,3 +18,5 @@ pub mod atom;
 pub use cfg::atom::Atom;
 pub mod variable;
 pub use cfg::variable::Variable;
+pub mod equal;
+pub use cfg::equal::Equal;
