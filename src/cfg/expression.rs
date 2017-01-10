@@ -22,7 +22,7 @@ pub enum Expression {
     Function(Function),
     Numeric(Numeric),
     Variable(Variable),
-    Expansion {
+    ArgumentPair {
         lexpr: Box<Expression>,
         msep: Msep,
         rexpr: Box<Expression>
