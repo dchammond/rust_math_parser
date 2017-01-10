@@ -17,7 +17,7 @@ impl Lexer {
     pub fn set_input(&mut self, input: String) {
         self.input = Some(input);
     }
-    pub fn transform(&self) -> cfg::value::Value {
+    pub fn transform(&self) -> cfg::Value {
         let x = cfg::Value::from(cfg::Terminating::from(cfg::Numeric(6.4)));
         x
     }
