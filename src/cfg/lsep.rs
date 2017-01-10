@@ -1,1 +1,1 @@
-pub struct Lsep(pub String);
+pub struct Lsep;
