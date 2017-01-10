@@ -18,7 +18,7 @@ impl Lexer {
         self.input = Some(input);
     }
     pub fn transform(&self) -> cfg::value::Value {
-        let x = cfg::value::Value::from(cfg::terminating::Terminating::from(cfg::numeric::Numeric(6.4)));
+        let x = cfg::Value::from(cfg::Terminating::from(cfg::Numeric(6.4)));
         x
     }
 }
