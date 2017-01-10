@@ -1,0 +1,1 @@
+pub struct Variable(pub String);

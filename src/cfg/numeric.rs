@@ -1,0 +1,1 @@
+pub struct Numeric(pub f64);
