@@ -9,7 +9,7 @@ type Statement = statement::Statement;
 type Assign = assign::Assign;
 type Function = function::Function;
 type Expression = expression::Expression;
-type Eq = eq::Eq;
+type Equal = equal::Equal;
 
 pub enum Atom {
     Statement(Statement),
