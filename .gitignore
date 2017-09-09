@@ -11,3 +11,6 @@ Cargo.lock
 
 # Mac stuff
 .DS_Store
+
+# Intellij stuff
+/.idea/
